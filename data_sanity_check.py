@@ -79,6 +79,46 @@ def check_equal_distribution(df, tolerance=0.05):
     print("Cumulative QPU block distribution among Atom, Photon, and Spin is equal within tolerance.")
     return True
 
+def check_workload_assignment(df):
+    """
+    Check that the daily workload assignment follows the constraint:
+      a. 50-60% of the workloads should be assigned to QPC blocks leased today.
+      b. 40-50% should be assigned to QPC blocks from the older pool.
+    
+    This function assumes the DataFrame includes:
+      - workloads_executed: total workloads executed for the day.
+      - workloads_today: workloads executed on QPC blocks leased today.
+      - workloads_older: workloads executed on QPC blocks from the older pool.
+    
+    Returns True if all days meet the constraints, otherwise prints details and returns False.
+    """
+    required_cols = ['total_workloads', 'workloads_new_blocks', 'workloads_older_blocks']
+    missing = [col for col in required_cols if col not in df.columns]
+    if missing:
+        print("Missing required columns for workload assignment check:", missing)
+        return False
+
+    # Verify that the split adds up to the total workloads
+    if not (df['workloads_new_blocks'] + df['workloads_older_blocks'] == df['total_workloads']).all():
+        print("Mismatch: The sum of workloads_today and workloads_older does not equal workloads_executed on some days.")
+        return False
+
+    ratio_today = df['workloads_new_blocks'] / df['total_workloads']
+    ratio_older = df['workloads_older_blocks'] / df['total_workloads']
+
+    # Check that today's workload ratio is between 50% and 60%
+    if not ratio_today.between(0.50, 0.60).all():
+        print("Some days do not meet the constraint: 50-60% of workloads assigned to today's leased blocks.")
+        return False
+
+    # Check that the older pool workload ratio is between 40% and 50%
+    if not ratio_older.between(0.40, 0.50).all():
+        print("Some days do not meet the constraint: 40-50% of workloads assigned to older pool blocks.")
+        return False
+
+    print("All days meet the workload assignment constraints (50-60% for today's and 40-50% for older pool).")
+    return True
+
 def run_all_checks(file_path):
     """
     Load the CSV file and run all the checks.
@@ -106,4 +146,4 @@ def run_all_checks(file_path):
 # file_path = 'simulated_qpu_data.csv'
 # run_all_checks(file_path)
 
-run_all_checks("../simulated_qpu_data.csv")
+run_all_checks("simulated_qpu_data.csv")
