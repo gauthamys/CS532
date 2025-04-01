@@ -1,0 +1,22 @@
+Column Name,Description
+date,Simulation date (YYYY-MM-DD)
+day_index,Sequential day number in the simulation
+new_blocks_total,Number of new QPU blocks leased on that day
+new_blocks_atom,Number of new Atom blocks leased on that day
+new_blocks_photon,Number of new Photon blocks leased on that day
+new_blocks_spin,Number of new Spin blocks leased on that day
+cumulative_blocks,Cumulative total of new blocks leased up to that day
+daily_workloads,Number of new workloads generated on that day
+cumulative_workloads,Cumulative sum of daily workloads from start to that day
+workloads_new_blocks,Daily workloads executed on blocks leased that day
+workloads_older_blocks,Daily workloads executed on blocks leased in previous days
+perc_new_workloads,Percentage of daily workloads executed on new blocks
+perc_old_workloads,Percentage of daily workloads executed on older blocks
+cumulative_workloads_new,Cumulative sum of workloads executed on new blocks
+cumulative_workloads_old,Cumulative sum of workloads executed on older blocks
+acquisition_cost,One-time cost for acquiring new blocks on that day
+lease_fee_cost,Daily lease fee cost for all blocks in the system
+workload_trigger_cost,Cost incurred from triggering the day's workloads
+workload_execution_cost,Cost incurred from executing the day's workloads
+total_daily_cost,Total daily cost (sum of all cost components)
+cost_per_workload,Daily cost per workload (total_daily_cost / daily_workloads)
